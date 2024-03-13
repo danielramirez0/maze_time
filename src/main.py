@@ -55,7 +55,9 @@ def main():
 
     # c3.draw_move(c4, True)
 
-    Maze(0, 0, 5, 5, 100, 100, window)
+    maze = Maze(10, 10, 5, 5, 100, 100, window)
+    maze._break_entrance_and_exit()
+
 
     window.wait_for_close()
 
