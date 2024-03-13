@@ -2,7 +2,7 @@ from graphics import Line, Point
 
 
 class Cell:
-    def __init__(self, window, top_left_cords, bottom_right_cords):
+    def __init__(self, top_left_cords: tuple, bottom_right_cords: tuple, window = None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
