@@ -18,6 +18,8 @@ def main():
         margin, margin, num_rows, num_cols, cell_width, cell_height, window, 10
     )
 
+    maze.solve()
+
     window.wait_for_close()
 
 

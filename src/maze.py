@@ -58,7 +58,7 @@ class Maze:
         if self._window is None:
             return
         self._window.redraw()
-        time.sleep(0.01)
+        time.sleep(0.05)
 
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
@@ -77,16 +77,16 @@ class Maze:
             direction_index = random.randrange(len(adjacent_options))
             next_index = adjacent_options[direction_index]
 
-            if next_index[0] == i + 1:
+            if next_index[0] == i + 1:  # right
                 self._cells[i][j].has_right_wall = False
                 self._cells[i + 1][j].has_left_wall = False
-            if next_index[0] == i - 1:
+            if next_index[0] == i - 1:  # left
                 self._cells[i][j].has_left_wall = False
                 self._cells[i - 1][j].has_right_wall = False
-            if next_index[1] == j + 1:
+            if next_index[1] == j + 1:  # down
                 self._cells[i][j].has_bottom_wall = False
                 self._cells[i][j + 1].has_top_wall = False
-            if next_index[1] == j - 1:
+            if next_index[1] == j - 1:  # up
                 self._cells[i][j].has_top_wall = False
                 self._cells[i][j - 1].has_bottom_wall = False
 
@@ -94,13 +94,13 @@ class Maze:
 
     def _get_adjacent_cells(self, i, j):
         adjacent_cells = []
-        if i > 0 and not self._cells[i - 1][j].visited:
+        if i > 0 and not self._cells[i - 1][j].visited:  # left
             adjacent_cells.append((i - 1, j))
-        if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+        if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:  # right
             adjacent_cells.append((i + 1, j))
-        if j > 0 and not self._cells[i][j - 1].visited:
+        if j > 0 and not self._cells[i][j - 1].visited:  # up
             adjacent_cells.append((i, j - 1))
-        if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
+        if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:  # down
             adjacent_cells.append((i, j + 1))
         return adjacent_cells
 
@@ -109,3 +109,54 @@ class Maze:
             for j in range(self._num_rows):
                 self._cells[i][j].visited = False
 
+    def solve(self):
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, i, j):
+        current_cell = self._cells[i][j]
+        self._animate()
+        current_cell.visited = True
+        if i == self._num_cols - 1 and j == self._num_rows - 1:
+            return True
+        if (  # left
+            i > 0
+            and not current_cell.has_left_wall
+            and not self._cells[i - 1][j].visited
+        ):
+            current_cell.draw_move(self._cells[i - 1][j])
+            if self._solve_r(i - 1, j):
+                return True
+            else:
+                current_cell.draw_move(self._cells[i - 1][j], True)
+
+        if (  # right
+            i < self._num_cols - 1
+            and not current_cell.has_right_wall
+            and not self._cells[i + 1][j].visited
+        ):
+            current_cell.draw_move(self._cells[i + 1][j])
+            if self._solve_r(i + 1, j):
+                return True
+            else:
+                current_cell.draw_move(self._cells[i + 1][j], True)
+        if (  # up
+            j > 0
+            and not current_cell.has_top_wall
+            and not self._cells[i][j - 1].visited
+        ):
+            current_cell.draw_move(self._cells[i][j - 1])
+            if self._solve_r(i, j - 1):
+                return True
+            else:
+                current_cell.draw_move(self._cells[i][j - 1], True)
+        if (  # down
+            j < self._num_rows - 1
+            and not current_cell.has_bottom_wall
+            and not self._cells[i][j + 1].visited
+        ):
+            current_cell.draw_move(self._cells[i][j + 1])
+            if self._solve_r(i, j + 1):
+                return True
+            else:
+                current_cell.draw_move(self._cells[i][j + 1], True)
+        return False
