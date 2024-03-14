@@ -28,6 +28,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         for i in range(self._num_cols):
@@ -102,3 +103,9 @@ class Maze:
         if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
             adjacent_cells.append((i, j + 1))
         return adjacent_cells
+
+    def _reset_cells_visited(self):
+        for i in range(self._num_cols):
+            for j in range(self._num_rows):
+                self._cells[i][j].visited = False
+
